@@ -108,4 +108,27 @@ describe("FieldState basic", () => {
     }
     assert.equal(error!.message, "Async validation error")
   });
+
+  it("auto validation with async validators", async () => {
+    const field = new FieldState("initValue").validators(
+      async (value) => {
+        await delay(200)
+        return value.trim().length > 0 ? null : "This field is required"
+      }
+    )
+    //make the field invalid
+    field.onChange("")
+    await delay(450)
+
+    // onChange - auto validation will start in 200ms
+    field.onChange("")
+
+    field.onChange("some value")
+
+    const result = field.validate() // validate manually, takes 200ms to respond
+    // after 200ms auto validation is fired and field.validate from before not considered last.
+    // Because it's not considered last - the previous result is taken - hasError: true, but we expect hasError: false
+    const {hasError} = await result
+    assert.equal(hasError, false)
+  })
 });
