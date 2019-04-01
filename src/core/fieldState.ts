@@ -164,6 +164,10 @@ export class FieldState<TValue> implements ComposibleValidatable<TValue> {
 
   @observable validating: boolean = false;
 
+  validateIsolate() {
+    return applyValidators(this.value, this._validators || [])
+  }
+
   /**
    * Runs validation on the current value immediately
    */

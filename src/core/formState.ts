@@ -48,6 +48,16 @@ export class FormState<TValue extends ValidatableMapOrArray> implements Composib
     return this;
   }
 
+  @action async validateIsolate() {
+    const values = this.getValues()
+    let fieldsResult = await Promise.all(values.map((value) => value.validateIsolate()))
+    let error = fieldsResult.find(f => !!f)
+    if (error) {
+      return error
+    }
+    return applyValidators(this.$, this._validators || [])
+  }
+
   /**
    * - Re-runs validation on all fields
    * - returns `hasError`

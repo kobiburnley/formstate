@@ -8,7 +8,7 @@ export type ValidationResponse =
   | false
 
 /** The return value of a validator */
-export type ValidatorResponse = 
+export type ValidatorResponse =
   ValidationResponse
   | Promise<ValidationResponse>
 
@@ -21,7 +21,7 @@ export interface Validator<TValue> {
 }
 
 /**
- * Runs the value through a list of validators. 
+ * Runs the value through a list of validators.
  * - As soon as a validation error is detected, the error is returned
  * - As soon as a validator dies unexpectedly (throws an error), we throw the same error.
  */
@@ -72,6 +72,7 @@ export function applyValidators<TValue>(value: TValue, validators: Validator<TVa
 /** Anything that provides this interface can be plugged into the validation system */
 export interface Validatable<TValue> {
   validating: boolean;
+  validateIsolate(): Promise<string | null | undefined>;
   validate(): Promise<{ hasError: true } | { hasError: false, value: TValue }>;
   hasError: boolean;
   error?: string | null | undefined;
